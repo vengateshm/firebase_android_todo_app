@@ -8,9 +8,12 @@ import android.widget.TextView;
 
 import java.util.Date;
 
-public class TodoVH extends RecyclerView.ViewHolder {
+public class TodoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private TextView tvTodo, tvTime;
+    private TextView tvTodo, tvOptions, tvTime;
+
+    private Todo todo;
+    private TodoListAdapter.TodoListItemClickListener listener;
 
     public TodoVH(@NonNull View itemView) {
         super(itemView);
@@ -19,10 +22,16 @@ public class TodoVH extends RecyclerView.ViewHolder {
 
     private void initViews(View itemView) {
         tvTodo = itemView.findViewById(R.id.tvTodo);
+        tvOptions = itemView.findViewById(R.id.tvOptions);
         tvTime = itemView.findViewById(R.id.tvTime);
+
+        tvOptions.setOnClickListener(this);
     }
 
-    public void setTodoMessage(Todo todo) {
+    public void setTodoMessage(Todo todo, TodoListAdapter.TodoListItemClickListener listener) {
+        this.todo = todo;
+        this.listener = listener;
+
         if (todo.getTodo() != null && !todo.getTodo().isEmpty())
             tvTodo.setText(todo.getTodo());
 
@@ -31,5 +40,18 @@ public class TodoVH extends RecyclerView.ViewHolder {
         String dateString = DateFormat.format("MMM dd hh:mm aaa", new Date(milliSec)).toString();
 
         tvTime.setText(dateString);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tvOptions) {
+            onOptionsClicked();
+        }
+    }
+
+    private void onOptionsClicked() {
+        if (listener != null) {
+            listener.onOptionsClicked(todo, tvOptions);
+        }
     }
 }

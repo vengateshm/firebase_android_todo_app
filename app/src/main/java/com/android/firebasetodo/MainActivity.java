@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -164,7 +166,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+            if (dataSnapshot.getValue() != null) {
+                Todo todo = dataSnapshot.getValue(Todo.class);
+                if (todo != null) {
+                    todo.setKey(dataSnapshot.getKey());
+                    if (adapter != null) {
+                        if (adapter.getTodoList() != null && !adapter.getTodoList().isEmpty()) {
+                            //int index = adapter.getTodoList().indexOf(todo);
+                            adapter.getTodoList().remove(todo);
+                            //adapter.notifyItemRemoved(index);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
         }
 
         @Override
@@ -181,6 +196,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onLoadMore() {
         loadOldTodos();
+    }
+
+    @Override
+    public void onOptionsClicked(final Todo todo, View view) {
+        //creating a popup menu
+        PopupMenu popup = new PopupMenu(this, view);
+        //inflating menu from xml resource
+        popup.inflate(R.menu.options_menu);
+        //adding click listener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.mnuDelete:
+                        onDeleteClicked(todo);
+                        break;
+                }
+                return false;
+            }
+        });
+        //displaying the popup
+        popup.show();
+    }
+
+    private void onDeleteClicked(Todo todo) {
+        if (todo != null && todo.getKey() != null && !todo.getKey().isEmpty()) {
+            FirebaseDatabase.getInstance().getReference("todos")
+                    .child(todo.getKey())
+                    .removeValue();
+        }
     }
 
     private void loadOldTodos() {

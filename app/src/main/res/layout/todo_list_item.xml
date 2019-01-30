@@ -16,11 +16,24 @@
             android:id="@+id/tvTodo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/tvOptions"
+            android:layout_toLeftOf="@+id/tvOptions"
             android:ellipsize="end"
             android:maxLines="3"
             android:padding="10dp"
             android:textColor="#333333"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="&#8942;"
+            android:padding="10dp"
+            android:textAppearance="?android:textAppearanceLarge" />
 
         <TextView
             android:id="@+id/tvTime"

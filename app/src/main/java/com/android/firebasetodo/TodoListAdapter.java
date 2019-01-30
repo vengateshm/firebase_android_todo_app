@@ -50,7 +50,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         switch (viewType) {
             case TYPE_ITEM:
-                ((TodoVH) holder).setTodoMessage(todoList.get(position));
+                ((TodoVH) holder).setTodoMessage(todoList.get(position), listener);
                 break;
             case TYPE_FOOTER:
                 onLoadMore(holder);
@@ -129,6 +129,10 @@ public class TodoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public List<Todo> getTodoList() {
+        return todoList;
+    }
+
     public void showLoadMoreProgress() {
         showLoadMoreProgress = true;
         notifyItemChanged(todoList.size() - 1);
@@ -141,5 +145,7 @@ public class TodoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface TodoListItemClickListener {
         void onLoadMore();
+
+        void onOptionsClicked(Todo todo, View view);
     }
 }
